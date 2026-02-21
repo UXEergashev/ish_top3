@@ -257,6 +257,15 @@ function logout() {
     window.location.href = 'index.html';
 }
 
+// Make functions global for inline HTML event handlers
+window.showLogin = showLogin;
+window.showRegister = showRegister;
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
+window.closeModal = closeModal;
+window.logout = logout;
+window.redirectToDashboard = redirectToDashboard;
+
 // Helper Functions
 function formatCurrency(amount) {
     return new Intl.NumberFormat('uz-UZ').format(amount) + ' so\'m';
