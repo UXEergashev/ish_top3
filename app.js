@@ -36,12 +36,15 @@ function initializeApp() {
         redirectToDashboard();
     }
 
-    // Initialize essential storage only
-    if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
-        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify([]));
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.JOBS)) {
-        localStorage.setItem(STORAGE_KEYS.JOBS, JSON.stringify([]));
+    // Initialize essential storage with demo data if empty
+    if (!localStorage.getItem(STORAGE_KEYS.JOBS) || JSON.parse(localStorage.getItem(STORAGE_KEYS.JOBS)).length === 0) {
+        // demoData is available if demo-data.js is loaded
+        if (typeof demoJobs !== 'undefined') {
+            localStorage.setItem(STORAGE_KEYS.JOBS, JSON.stringify(demoJobs));
+            console.log('Demo jobs initialized');
+        } else {
+            localStorage.setItem(STORAGE_KEYS.JOBS, JSON.stringify([]));
+        }
     }
 }
 
