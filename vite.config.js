@@ -1,10 +1,9 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 
 // https://vite.dev/config/
+// This is a vanilla JS multi-page app, no React
 export default defineConfig({
-  plugins: [react()],
   build: {
     rollupOptions: {
       input: {
