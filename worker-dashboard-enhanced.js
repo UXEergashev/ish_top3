@@ -337,56 +337,53 @@ function showPremiumBadge() {
 }
 
 function showPremiumUpgrade() {
-    const modal = `
-        <div class="modal active" id="premiumModal">
-            <div class="modal-overlay" onclick="closePremiumModal()"></div>
-            <div class="modal-content" style="max-width: 700px;">
-                <button class="modal-close" onclick="closePremiumModal()">×</button>
-                <h2 style="margin-bottom: 1rem; text-align: center;">
-                    ⭐ Premium Obuna
-                </h2>
-                <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">
-                    Premium obuna bilan ko'proq ish topib, yuqori daromad qiling!
-                </p>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-                    <div class="premium-feature">
-                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🚀</div>
-                        <h3 style="margin-bottom: 0.5rem;">Profilni ko'tarish</h3>
-                        <p style="color: var(--text-muted); font-size: 0.875rem;">Profilingiz tepada ko'rinadi</p>
-                    </div>
-                    
-                    <div class="premium-feature">
-                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🤖</div>
-                        <h3 style="margin-bottom: 0.5rem;">AI ustuvor tavsiya</h3>
-                        <p style="color: var(--text-muted); font-size: 0.875rem;">Birinchi bo'lib mos ishlarni ko'ring</p>
-                    </div>
-                    
-                    <div class="premium-feature">
-                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
-                        <h3 style="margin-bottom: 0.5rem;">Kengaytirilgan statistika</h3>
-                        <p style="color: var(--text-muted); font-size: 0.875rem;">Batafsil tahlil va hisobotlar</p>
-                    </div>
-                    
-                    <div class="premium-feature">
-                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
-                        <h3 style="margin-bottom: 0.5rem;">Cheksiz murojaat</h3>
-                        <p style="color: var(--text-muted); font-size: 0.875rem;">Kunlik limitlarsiz</p>
-                    </div>
+    const premiumContent = document.getElementById('premiumContent');
+    if (premiumContent) {
+        premiumContent.innerHTML = `
+            <h2 style="margin-bottom: 1rem; text-align: center;">
+                ⭐ Premium Obuna
+            </h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">
+                Premium obuna bilan ko'proq ish topib, yuqori daromad qiling!
+            </p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="premium-feature">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🚀</div>
+                    <h3 style="margin-bottom: 0.5rem;">Profilni ko'tarish</h3>
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Profilingiz tepada ko'rinadi</p>
                 </div>
                 
-                <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: 1.5rem; padding: 2rem; text-align: center; color: white;">
-                    <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem;">49,000 so'm</div>
-                    <div style="font-size: 1.125rem; opacity: 0.9; margin-bottom: 1.5rem;">oyiga</div>
-                    <button class="btn-primary" onclick="upgradeToPremium()" style="background: white; color: #6366f1; width: 100%; justify-content: center;">
-                        Premium sotib olish
-                    </button>
+                <div class="premium-feature">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🤖</div>
+                    <h3 style="margin-bottom: 0.5rem;">AI ustuvor tavsiya</h3>
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Birinchi bo'lib mos ishlarni ko'ring</p>
+                </div>
+                
+                <div class="premium-feature">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+                    <h3 style="margin-bottom: 0.5rem;">Kengaytirilgan statistika</h3>
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Batafsil tahlil va hisobotlar</p>
+                </div>
+                
+                <div class="premium-feature">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
+                    <h3 style="margin-bottom: 0.5rem;">Cheksiz murojaat</h3>
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Kunlik limitlarsiz</p>
                 </div>
             </div>
-        </div>
-    `;
-
-    document.body.insertAdjacentHTML('beforeend', modal);
+            
+            <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: 1.5rem; padding: 2rem; text-align: center; color: white;">
+                <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem;">49,000 so'm</div>
+                <div style="font-size: 1.125rem; opacity: 0.9; margin-bottom: 1.5rem;">oyiga</div>
+                <button class="btn-primary" onclick="upgradeToPremium()" style="background: white; color: #6366f1; width: 100%; justify-content: center;">
+                    Premium sotib olish
+                </button>
+            </div>
+        `;
+    }
+    const modal = document.getElementById('premiumModal');
+    if (modal) modal.classList.add('active');
 }
 
 function upgradeToPremium() {
@@ -835,71 +832,75 @@ function viewJobDetails(jobId) {
 
     // Calculate match score
     const match = calculateJobMatches([job])[0];
+    const isSaved = typeof getSavedJobs === 'function' ? getSavedJobs().includes(job.id) : false;
 
-    const modal = `
-        <div class="modal active" id="jobDetailModal">
-            <div class="modal-overlay" onclick="closeJobDetailModal()"></div>
-            <div class="modal-content" style="max-width: 700px;">
-                <button class="modal-close" onclick="closeJobDetailModal()">×</button>
-                
-                ${match.matchScore >= 80 ? `
-                    <div class="ai-badge" style="margin-bottom: 1rem; display: inline-block;">
-                        ⭐ AI Match ${match.matchScore}%
-                    </div>
-                ` : ''}
-                
-                <h2 style="margin-bottom: 1rem;">${job.title}</h2>
-                <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-                    <span class="job-category">${job.category}</span>
-                    ${job.escrowRequired ? '<span class="escrow-badge">🛡️ Kafolatli to\'lov</span>' : ''}
-                    ${job.urgent ? '<span class="urgent-badge">⚡ Tezkor</span>' : ''}
+    const content = document.getElementById('jobDetailContent');
+    const modal = document.getElementById('jobDetailModal');
+
+    if (content) {
+        content.innerHTML = `
+            ${match.matchScore >= 80 ? `
+                <div class="ai-badge" style="margin-bottom: 1rem; display: inline-block;">
+                    🤖 AI Match ${match.matchScore}%
                 </div>
-                
-                <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
-                    <div style="font-size: 2rem; font-weight: 800; color: #10b981; margin-bottom: 0.5rem;">
-                        ${formatCurrency(job.salary)}
-                    </div>
-                    <div style="color: var(--text-secondary);">
-                        📍 ${job.location} | ⏱️ ${job.duration}
-                    </div>
+            ` : ''}
+            
+            <h2 style="margin-bottom: 1rem;">${job.title}</h2>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                <span class="job-category">${job.category}</span>
+                ${job.escrowRequired ? '<span class="escrow-badge">🛡️ Kafolatli to\'lov</span>' : ''}
+                ${job.urgent ? '<span class="urgent-badge">⚡ Tezkor</span>' : ''}
+            </div>
+            
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+                <div style="font-size: 2rem; font-weight: 800; color: #10b981; margin-bottom: 0.5rem;">
+                    ${formatCurrency(job.salary)}
                 </div>
-                
+                <div style="color: var(--text-secondary);">
+                    📍 ${job.location} | ⏱️ ${job.duration}
+                    ${job.employerRating ? ` | ⭐ ${job.employerRating.toFixed(1)}` : ''}
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <h3 style="margin-bottom: 0.5rem;">📝 Tavsif</h3>
+                <p style="color: var(--text-secondary); line-height: 1.7;">${job.description}</p>
+            </div>
+            
+            ${job.requirements && job.requirements.length > 0 ? `
                 <div style="margin-bottom: 1.5rem;">
-                    <h3 style="margin-bottom: 0.5rem;">📝 Tavsif</h3>
-                    <p style="color: var(--text-secondary); line-height: 1.7;">${job.description}</p>
+                    <h3 style="margin-bottom: 0.5rem;">✅ Talablar</h3>
+                    <ul style="color: var(--text-secondary); padding-left: 1.5rem;">
+                        ${job.requirements.map(req => `<li>${req}</li>`).join('')}
+                    </ul>
                 </div>
-                
-                ${job.requirements && job.requirements.length > 0 ? `
-                    <div style="margin-bottom: 1.5rem;">
-                        <h3 style="margin-bottom: 0.5rem;">✅ Talablar</h3>
-                        <ul style="color: var(--text-secondary); padding-left: 1.5rem;">
-                            ${job.requirements.map(req => `<li>${req}</li>`).join('')}
-                        </ul>
-                    </div>
-                ` : ''}
-                
-                ${match.matchReasons.length > 0 ? `
-                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
-                        <h3 style="margin-bottom: 0.5rem;">💡 Nima uchun sizga mos:</h3>
-                        <ul style="color: var(--text-secondary); padding-left: 1.5rem;">
-                            ${match.matchReasons.map(reason => `<li>${reason}</li>`).join('')}
-                        </ul>
-                    </div>
-                ` : ''}
-                
-                <button class="btn-primary" onclick="oneClickApply('${job.id}')" style="width: 100%; justify-content: center;">
-                    Bir bosishda murojaat yuborish
+            ` : ''}
+            
+            ${match.matchReasons.length > 0 ? `
+                <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <h3 style="margin-bottom: 0.5rem;">💡 Nima uchun sizga mos:</h3>
+                    <ul style="color: var(--text-secondary); padding-left: 1.5rem;">
+                        ${match.matchReasons.map(reason => `<li>${reason}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+            
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn-primary" onclick="oneClickApply('${job.id}')" style="flex: 1; justify-content: center;">
+                    ⚡ Murojaat yuborish
+                </button>
+                <button class="btn-secondary" onclick="toggleSaveJob('${job.id}', this)">
+                    ${isSaved ? '❤️ Saqlangan' : '🤍 Saqlash'}
                 </button>
             </div>
-        </div>
-    `;
+        `;
+    }
 
-    document.body.insertAdjacentHTML('beforeend', modal);
+    if (modal) modal.classList.add('active');
 }
 
 function closeJobDetailModal() {
-    const modal = document.getElementById('jobDetailModal');
-    if (modal) modal.remove();
+    closeJobModal();
 }
 
 // Applications

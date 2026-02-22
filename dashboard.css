@@ -529,19 +529,8 @@
 }
 
 @media (max-width: 768px) {
-    .sidebar {
-        width: 70px;
-    }
 
-    .sidebar-header .logo-text,
-    .nav-item span:not(.nav-icon) {
-        display: none;
-    }
-
-    .main-content {
-        margin-left: 70px;
-    }
-
+    /* Sidebar is handled by worker-new.css with slide-in behavior */
     .stats-grid {
         grid-template-columns: 1fr;
     }
