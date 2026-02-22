@@ -54,6 +54,7 @@ function initializeDashboard() {
         // Load dashboard data
         loadDashboardStats();
         loadRecentApplicants();
+        updateApplicantsBadge();
 
         console.log('Employer dashboard initialized successfully');
     } catch (error) {
@@ -61,10 +62,78 @@ function initializeDashboard() {
     }
 }
 
+// ===== MOBILE SIDEBAR =====
+function toggleMobileSidebar() {
+    const sidebar = document.getElementById('mainSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (sidebar) sidebar.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('active');
+}
+
+function closeMobileSidebar() {
+    const sidebar = document.getElementById('mainSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
+}
+
+// ===== TOAST =====
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const colors = { success: '#10b981', error: '#ef4444', info: '#6366f1', warning: '#f59e0b' };
+    const toast = document.createElement('div');
+    toast.style.cssText = `background:${colors[type] || colors.info};color:white;padding:0.75rem 1.5rem;border-radius:0.75rem;font-size:0.9rem;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-top:0.5rem;`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
+// Add toast animation style
+const _toastStyle = document.createElement('style');
+_toastStyle.textContent = '@keyframes slideInRight{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}} .toast-container{position:fixed;bottom:5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;} @media(min-width:769px){.toast-container{bottom:1.5rem;}}';
+document.head.appendChild(_toastStyle);
+
+// ===== APPLICANTS BADGE =====
+function updateApplicantsBadge() {
+    const jobs = JSON.parse(localStorage.getItem(STORAGE_KEYS.JOBS) || '[]');
+    const applications = JSON.parse(localStorage.getItem(STORAGE_KEYS.APPLICATIONS) || '[]');
+    const myJobIds = jobs.filter(j => j.employerId === currentUser.id).map(j => j.id);
+    const pendingCount = applications.filter(a => myJobIds.includes(a.jobId) && a.status === 'pending').length;
+    const badge = document.getElementById('applicantsBadge');
+    if (badge) {
+        badge.textContent = pendingCount;
+        badge.style.display = pendingCount > 0 ? 'flex' : 'none';
+    }
+}
+
+// ===== BOTTOM NAV SYNC =====
+function updateBottomNav(sectionName) {
+    document.querySelectorAll('.bottom-nav-item').forEach(item => item.classList.remove('active'));
+    const mapping = {
+        'dashboard': 'bnav-dashboard',
+        'post-job': 'bnav-post-job',
+        'my-jobs': 'bnav-my-jobs',
+        'applicants': 'bnav-applicants',
+        'contracts': 'bnav-contracts',
+        'payments': 'bnav-contracts',
+        'history': 'bnav-my-jobs'
+    };
+    const targetId = mapping[sectionName];
+    if (targetId) {
+        const el = document.getElementById(targetId);
+        if (el) el.classList.add('active');
+    }
+}
+
+
 // Section Navigation
 function showSection(sectionName) {
     try {
         console.log('Showing section:', sectionName);
+
+        // Close mobile sidebar
+        closeMobileSidebar();
 
         // Update nav items
         const allNavItems = document.querySelectorAll('.nav-item');
@@ -85,25 +154,38 @@ function showSection(sectionName) {
         const targetSection = document.getElementById(`section-${sectionName}`);
         if (targetSection) {
             targetSection.classList.add('active');
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
             console.error(`Section not found: section-${sectionName}`);
         }
 
-        // Update page title
+        // Update page title & subtitle
         const titles = {
             dashboard: 'Bosh sahifa',
-            'post-job': 'Ish e\'lon qilish',
+            'post-job': "Ish e'lon qilish",
             'my-jobs': 'Mening ishlarim',
             applicants: 'Murojaatlar',
             contracts: 'Shartnomalar',
-            payments: 'To\'lovlar',
+            payments: "To'lovlar",
             history: 'Tarix'
+        };
+        const subtitles = {
+            dashboard: "Bugungi ko'rsatkichlar",
+            'post-job': 'Yangi ish qo\'shish',
+            'my-jobs': 'Barcha e\'lon qilgan ishlaringiz',
+            applicants: 'Ishchilarning murojaatlari',
+            contracts: 'Faol va tugallangan shartnomalar',
+            payments: 'To\'lovlar tarixi',
+            history: 'Tugallangan ishlar'
         };
 
         const titleEl = document.getElementById('pageTitle');
-        if (titleEl && titles[sectionName]) {
-            titleEl.textContent = titles[sectionName];
-        }
+        const subtitleEl = document.getElementById('pageSubtitle');
+        if (titleEl && titles[sectionName]) titleEl.textContent = titles[sectionName];
+        if (subtitleEl && subtitles[sectionName]) subtitleEl.textContent = subtitles[sectionName];
+
+        // Update bottom nav
+        updateBottomNav(sectionName);
 
         // Load section data
         loadSectionData(sectionName);
@@ -111,6 +193,7 @@ function showSection(sectionName) {
         console.error('Error in showSection:', error);
     }
 }
+
 
 function loadSectionData(sectionName) {
     try {
@@ -498,6 +581,9 @@ function acceptApplicant(applicationId) {
     alert('Ishchi qabul qilindi va shartnoma yaratildi!');
     loadAllApplicants();
     loadDashboardStats();
+    updateApplicantsBadge();
+    showToast('✅ Ishchi qabul qilindi!', 'success');
+
 }
 
 function rejectApplicant(applicationId) {
@@ -512,6 +598,8 @@ function rejectApplicant(applicationId) {
 
         alert('Murojaat rad etildi!');
         loadAllApplicants();
+        updateApplicantsBadge();
+        showToast('Murojaat rad etildi', 'info');
     }
 }
 
@@ -524,7 +612,7 @@ function loadContracts() {
 
     if (myContracts.length === 0) {
         container.innerHTML = `
-            <div class="empty-state">
+        <div class="empty-state">
                 <div class="empty-state-icon">📄</div>
                 <div class="empty-state-text">Sizda faol shartnomalar yo'q</div>
             </div>

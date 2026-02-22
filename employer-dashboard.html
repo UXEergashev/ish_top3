@@ -5,19 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ish beruvchi Dashboard - TrustID</title>
+    <meta name="description"
+        content="TrustID - Ish beruvchi boshqaruv paneli. Ishlarni e'lon qiling, murojaatlarni ko'ring.">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="worker-new.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
 </head>
 
 <body class="dashboard-body">
+    <!-- Mobile Hamburger -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileSidebar()">&#9776;</button>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
+
     <div class="dashboard-container">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="mainSidebar">
             <div class="sidebar-header">
                 <div class="logo">
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
                         <circle cx="20" cy="20" r="18" fill="url(#gradient1)" />
                         <path d="M20 10L25 15H22V25H18V15H15L20 10Z" fill="white" />
                         <path d="M12 28H28V30H12V28Z" fill="white" />
@@ -30,41 +37,45 @@
                     </svg>
                     <span class="logo-text">TrustID</span>
                 </div>
+                <div
+                    style="font-size:0.72rem;color:#a5b4fc;margin-top:0.5rem;padding:0.35rem 0.75rem;background:rgba(99,102,241,0.15);border-radius:1rem;border:1px solid rgba(99,102,241,0.3);text-align:center;">
+                    🏢 Ish beruvchi
+                </div>
             </div>
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                <a href="#" class="nav-item active" onclick="showSection('dashboard')" id="nav-dashboard">
                     <span class="nav-icon">📊</span>
                     <span>Bosh sahifa</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showSection('post-job')">
+                <a href="#" class="nav-item" onclick="showSection('post-job')" id="nav-post-job">
                     <span class="nav-icon">➕</span>
                     <span>Ish e'lon qilish</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showSection('my-jobs')">
+                <a href="#" class="nav-item" onclick="showSection('my-jobs')" id="nav-my-jobs">
                     <span class="nav-icon">💼</span>
                     <span>Mening ishlarim</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showSection('applicants')">
+                <a href="#" class="nav-item" onclick="showSection('applicants')" id="nav-applicants">
                     <span class="nav-icon">👥</span>
                     <span>Murojaatlar</span>
+                    <span class="nav-badge" id="applicantsBadge" style="display:none">0</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showSection('contracts')">
+                <a href="#" class="nav-item" onclick="showSection('contracts')" id="nav-contracts">
                     <span class="nav-icon">📄</span>
                     <span>Shartnomalar</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showSection('payments')">
+                <a href="#" class="nav-item" onclick="showSection('payments')" id="nav-payments">
                     <span class="nav-icon">💳</span>
                     <span>To'lovlar</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showSection('history')">
+                <a href="#" class="nav-item" onclick="showSection('history')" id="nav-history">
                     <span class="nav-icon">📚</span>
                     <span>Tarix</span>
                 </a>
             </nav>
             <div class="sidebar-footer">
-                <button class="btn-danger" onclick="logout()" style="width: 100%;">
-                    <span>🚪</span>
-                    Chiqish
+                <button class="btn-danger" onclick="logout()" style="width:100%;margin-top:0.5rem;">
+                    <span>🚪</span> Chiqish
                 </button>
             </div>
         </aside>
@@ -75,14 +86,16 @@
             <header class="dashboard-header">
                 <div class="header-left">
                     <h1 id="pageTitle">Bosh sahifa</h1>
+                    <p class="header-subtitle" id="pageSubtitle">Bugungi ko'rsatkichlar</p>
                 </div>
                 <div class="header-right">
                     <div class="balance-card">
                         <span class="balance-label">Depozit:</span>
                         <span class="balance-value" id="userBalance">0 so'm</span>
                     </div>
-                    <div class="user-avatar" id="userAvatar">
+                    <div class="user-avatar" id="userAvatar" style="position:relative;">
                         <span id="userInitials">?</span>
+                        <div class="online-indicator"></div>
                     </div>
                 </div>
             </header>
@@ -91,33 +104,53 @@
             <section id="section-dashboard" class="content-section active">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(99, 102, 241, 0.2);">📋</div>
+                        <div class="stat-icon" style="background:rgba(99,102,241,0.2);">📋</div>
                         <div class="stat-info">
                             <div class="stat-value" id="totalJobs">0</div>
                             <div class="stat-label">Jami ishlar</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2);">⏳</div>
+                        <div class="stat-icon" style="background:rgba(245,158,11,0.2);">⏳</div>
                         <div class="stat-info">
                             <div class="stat-value" id="activeJobs">0</div>
                             <div class="stat-label">Faol ishlar</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.2);">✅</div>
+                        <div class="stat-icon" style="background:rgba(16,185,129,0.2);">✅</div>
                         <div class="stat-info">
                             <div class="stat-value" id="completedJobs">0</div>
                             <div class="stat-label">Tugallangan</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(236, 72, 153, 0.2);">👥</div>
+                        <div class="stat-icon" style="background:rgba(236,72,153,0.2);">👥</div>
                         <div class="stat-info">
                             <div class="stat-value" id="totalApplicants">0</div>
                             <div class="stat-label">Murojaatlar</div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="employer-quick-actions">
+                    <button class="employer-quick-btn" onclick="showSection('post-job')">
+                        <span style="font-size:2rem;">➕</span>
+                        <span>Ish e'lon qilish</span>
+                    </button>
+                    <button class="employer-quick-btn" onclick="showSection('applicants')">
+                        <span style="font-size:2rem;">👥</span>
+                        <span>Murojaatlar</span>
+                    </button>
+                    <button class="employer-quick-btn" onclick="showSection('contracts')">
+                        <span style="font-size:2rem;">📄</span>
+                        <span>Shartnomalar</span>
+                    </button>
+                    <button class="employer-quick-btn" onclick="showSection('my-jobs')">
+                        <span style="font-size:2rem;">💼</span>
+                        <span>Mening ishlarim</span>
+                    </button>
                 </div>
 
                 <div class="card">
@@ -166,22 +199,17 @@
                                 <label>Muddat *</label>
                                 <input type="text" id="jobDuration" required placeholder="2 oy">
                             </div>
-                            <div class="form-group full-width"
-                                style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-md); padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-                                <input type="checkbox" id="escrowRequired"
-                                    style="width: 20px; height: 20px; cursor: pointer;">
-                                <label for="escrowRequired"
-                                    style="cursor: pointer; margin: 0; color: var(--text-primary);">
-                                    🛡️ <strong>Escrow (Kafolatli to'lov)</strong> - Pul platformada saqlanadi va ish
+                            <div class="form-group full-width employer-checkbox-card escrow-card">
+                                <input type="checkbox" id="escrowRequired">
+                                <label for="escrowRequired">
+                                    🛡️ <strong>Escrow (Kafolatli to'lov)</strong> — Pul platformada saqlanadi va ish
                                     tugagach avtomatik to'lanadi
                                 </label>
                             </div>
-                            <div class="form-group full-width"
-                                style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: var(--radius-md); padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-                                <input type="checkbox" id="urgentJob"
-                                    style="width: 20px; height: 20px; cursor: pointer;">
-                                <label for="urgentJob" style="cursor: pointer; margin: 0; color: var(--text-primary);">
-                                    ⚡ <strong>Tezkor ish</strong> - E'loningiz yuqorida ko'rinadi
+                            <div class="form-group full-width employer-checkbox-card urgent-card">
+                                <input type="checkbox" id="urgentJob">
+                                <label for="urgentJob">
+                                    ⚡ <strong>Tezkor ish</strong> — E'loningiz yuqorida ko'rinadi
                                 </label>
                             </div>
                             <div class="form-group full-width">
@@ -190,7 +218,10 @@
                                     placeholder="3+ yil tajriba&#10;Sertifikat&#10;Mexanizmlar bilan ishlash"></textarea>
                             </div>
                         </div>
-                        <button type="submit" class="btn-primary">E'lon qilish</button>
+                        <button type="submit" class="btn-primary"
+                            style="width:100%;justify-content:center;margin-top:1rem;">
+                            📢 E'lon qilish
+                        </button>
                     </form>
                 </div>
             </section>
@@ -198,7 +229,10 @@
             <!-- My Jobs Section -->
             <section id="section-my-jobs" class="content-section">
                 <div class="card">
-                    <h2 class="card-title">Mening ishlarim</h2>
+                    <div class="card-header">
+                        <h2 class="card-title" style="margin-bottom:0;">Mening ishlarim</h2>
+                        <button class="btn-primary btn-small" onclick="showSection('post-job')">+ Yangi</button>
+                    </div>
                     <div id="myJobsList"></div>
                 </div>
             </section>
@@ -236,6 +270,33 @@
             </section>
         </main>
     </div>
+
+    <!-- Mobile Bottom Navigation (Employer) -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+        <a href="#" class="bottom-nav-item active" onclick="showSection('dashboard')" id="bnav-dashboard">
+            <span class="bottom-nav-icon">📊</span>
+            <span class="bottom-nav-label">Asosiy</span>
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="showSection('post-job')" id="bnav-post-job">
+            <span class="bottom-nav-icon">➕</span>
+            <span class="bottom-nav-label">E'lon</span>
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="showSection('applicants')" id="bnav-applicants">
+            <span class="bottom-nav-icon">👥</span>
+            <span class="bottom-nav-label">Murojaat</span>
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="showSection('contracts')" id="bnav-contracts">
+            <span class="bottom-nav-icon">📄</span>
+            <span class="bottom-nav-label">Shartnoma</span>
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="showSection('my-jobs')" id="bnav-my-jobs">
+            <span class="bottom-nav-icon">💼</span>
+            <span class="bottom-nav-label">Ishlarim</span>
+        </a>
+    </nav>
+
+    <!-- Toast -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <script src="employer-dashboard.js"></script>
 </body>
